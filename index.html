@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KR Support - Final Update</title>
+    <title>KR Support - Official</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
@@ -17,24 +17,21 @@
         body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; margin: 0; padding: 10px; display: flex; justify-content: center; }
         .container { width: 100%; max-width: 450px; background: #fff; border-radius: 25px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
         
-        /* Auth Box */
         #auth-section { background: #fff3f3; border: 2px solid #ff4757; padding: 15px; border-radius: 15px; margin-bottom: 20px; }
         .google-btn { background: white; color: #444; padding: 12px; border-radius: 50px; border: 1px solid #ddd; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; }
 
         .stat-card { flex: 1; padding: 10px; border-radius: 12px; color: white; font-weight: bold; font-size: 12px; margin-bottom: 15px; }
-        
-        /* Form Styling */
         .input-group { text-align: left; margin-bottom: 15px; }
         .input-group label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 13px; color: #444; }
         input, textarea { width: 100%; padding: 12px; border-radius: 10px; border: 1.5px solid #ddd; outline: none; box-sizing: border-box; }
         
         .drop-trigger { width: 100%; padding: 12px; background: var(--dark); color: white; border: none; border-radius: 10px; cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; }
-        .prob-panel { display: none; flex-direction: column; gap: 5px; margin-top: 5px; background: #f9f9f9; padding: 10px; border-radius: 10px; border: 1px solid #eee; }
-        .prob-item { padding: 10px; border-radius: 8px; background: white; cursor: pointer; border: 1px solid #eee; font-size: 14px; }
+        /* সমস্যার লিস্ট সুন্দরভাবে দেখানোর জন্য এই স্টাইলটি ঠিক করা হয়েছে */
+        .prob-panel { display: none; flex-direction: column; gap: 5px; margin-top: 5px; background: #f9f9f9; padding: 10px; border-radius: 10px; border: 1px solid #eee; text-align: left; }
+        .prob-item { padding: 10px; border-radius: 8px; background: white; cursor: pointer; border: 1px solid #eee; font-size: 14px; color: #333; }
         .prob-item.selected { background: #ff4757 !important; color: white !important; }
 
         .submit-btn { width: 100%; padding: 16px; background: linear-gradient(to right, var(--primary), var(--secondary)); color: white; border: none; border-radius: 50px; font-size: 16px; font-weight: bold; cursor: pointer; }
-        
         .hidden { display: none !important; }
         #success-page, #blocked-screen { display:none; position: fixed; inset: 0; background: #fff; text-align: center; padding: 20px; z-index: 9999; flex-direction: column; align-items: center; justify-content: center; }
     </style>
@@ -60,28 +57,23 @@
     <form id="complaint-form" style="opacity: 0.2; pointer-events: none;">
         <div class="input-group">
             <label>📜 পুরাতন টোকেন আইডি (ঐচ্ছিক)</label>
-            <input type="tel" id="old_token" placeholder="থাকলে লিখুন (৬ ডিজিট)" maxlength="6">
+            <input type="tel" id="old_token" placeholder="থাকলে লিখুন" maxlength="6">
         </div>
 
         <div class="input-group"><label>👤 নাম</label><input type="text" id="user_name" readonly></div>
-        
-        <div class="input-group hidden" id="email-group">
-            <label>📧 ইমেইল</label><input type="email" id="user_email">
-        </div>
-
         <div class="input-group"><label>📍 বর্তমান ঠিকানা</label><input type="text" id="user_address" placeholder="আপনার ঠিকানা লিখুন" required></div>
         <div class="input-group"><label>📞 ফোন নম্বর</label><input type="tel" id="user_phone" placeholder="01XXXXXXXXX" pattern="01[3-9][0-9]{8}" maxlength="11" required></div>
         
         <div class="input-group">
-            <label>⚠️ সমস্যা বাছাই করুন (বাধ্যতামূলক)</label>
+            <label>⚠️ সমস্যা বাছাই করুন (কমপক্ষে ১টি)</label>
             <button type="button" class="drop-trigger" onclick="toggleDrop()">
                 <span id="drop-label">সিলেক্ট করুন</span><i class="fas fa-chevron-down"></i>
             </button>
-            <div class="prob-panel" id="prob-panel"></div>
+            <div class="prob-panel" id="prob-panel">
+                </div>
         </div>
 
-        <div class="input-group"><label>📝 অভিযোগের বর্ণনা</label><textarea id="user_msg" rows="3" placeholder="বিস্তারিত লিখুন (ন্যূনতম ১০ অক্ষর)..." required minlength="10"></textarea></div>
-        
+        <div class="input-group"><label>📝 অভিযোগের বর্ণনা</label><textarea id="user_msg" rows="3" placeholder="বিস্তারিত লিখুন..." required minlength="10"></textarea></div>
         <button type="submit" class="submit-btn" id="loader-btn">🚀 অভিযোগ জমা দিন</button>
     </form>
 </div>
@@ -89,7 +81,7 @@
 <div id="blocked-screen">
     <i class="fas fa-user-lock" style="font-size: 60px; color: red;"></i>
     <h2 style="color:red;">সীমাবদ্ধতা!</h2>
-    <p id="block-msg">আপনি ১৫ দিনে ৩টির বেশি অভিযোগ করতে পারবেন না।</p>
+    <p>আপনি ১৫ দিনে ৩টির বেশি অভিযোগ করতে পারবেন না।</p>
 </div>
 
 <div id="success-page">
@@ -99,7 +91,6 @@
         <h1 id="final-tid" style="color: var(--primary); margin:0;">KR-000000</h1>
     </div>
     <button class="submit-btn" onclick="copyResult()">📋 আইডি কপি করুন</button>
-    <p onclick="location.reload()" style="cursor: pointer; text-decoration: underline; margin-top:20px;">ফিরে যান</p>
 </div>
 
 <script>
@@ -122,13 +113,13 @@
     const currentTID = "KR-" + Math.floor(100000 + Math.random() * 900000);
     document.getElementById('current-id').innerText = currentTID;
 
-    // ১. গুগল লগইন (Redirect)
+    // লগইন ফাংশন
     function googleLogin() {
         const provider = new firebase.auth.GoogleAuthProvider();
         auth.signInWithRedirect(provider);
     }
 
-    // ২. সিস্টেম চেক
+    // অ্যাপ ইনিশিয়ালাইজেশন
     async function init() {
         const fp = await FingerprintJS.load();
         const res = await fp.get();
@@ -137,9 +128,33 @@
         auth.getRedirectResult().then(result => { if (result.user) handleAuth(result.user); });
         auth.onAuthStateChanged(user => { if (user) handleAuth(user); });
 
+        // ক্রেডিট চেক
         const mKey = new Date().getFullYear() + "-" + (new Date().getMonth() + 1);
         database.ref('credits/' + mKey).on('value', snap => {
             document.getElementById('remain-count').innerText = snap.exists() ? snap.val().count : 200;
+        });
+
+        // সমস্যার নামগুলো লোড করা
+        const probs = ["অংক ভুল", "হিস্ট্রি এরর", "অ্যাপ ক্রাশ", "ক্রেডিট ইস্যু", "অন্যান্য"];
+        const panel = document.getElementById('prob-panel');
+        panel.innerHTML = ""; // আগের থাকলে মুছে ফেলা
+        probs.forEach(p => {
+            let div = document.createElement('div');
+            div.className = 'prob-item'; 
+            div.innerText = p;
+            div.onclick = function() {
+                if(selectedProbs.includes(p)) { 
+                    selectedProbs = selectedProbs.filter(i => i !== p); 
+                    this.classList.remove('selected'); 
+                } else { 
+                    if(selectedProbs.length < 3) { 
+                        selectedProbs.push(p); 
+                        this.classList.add('selected'); 
+                    } else alert("সর্বোচ্চ ৩টি বাছাই করা যাবে");
+                }
+                document.getElementById('drop-label').innerText = selectedProbs.length > 0 ? selectedProbs.length + "টি সিলেক্টেড" : "সিলেক্ট করুন";
+            };
+            panel.appendChild(div);
         });
     }
 
@@ -157,41 +172,30 @@
 
     init();
 
-    // ৩. ড্রপডাউন সমস্যা
-    const probs = ["অংক ভুল", "হিস্ট্রি এরর", "অ্যাপ ক্রাশ", "ক্রেডিট ইস্যু", "অন্যান্য"];
-    probs.forEach(p => {
-        let div = document.createElement('div');
-        div.className = 'prob-item'; div.innerText = p;
-        div.onclick = function() {
-            if(selectedProbs.includes(p)) { selectedProbs = selectedProbs.filter(i => i !== p); this.classList.remove('selected'); }
-            else { if(selectedProbs.length < 3) { selectedProbs.push(p); this.classList.add('selected'); } }
-            document.getElementById('drop-label').innerText = selectedProbs.length > 0 ? selectedProbs.length + "টি সিলেক্টেড" : "সিলেক্ট করুন";
-        };
-        document.getElementById('prob-panel').appendChild(div);
-    });
+    function toggleDrop() { 
+        const p = document.getElementById('prob-panel'); 
+        p.style.display = (p.style.display === 'flex') ? 'none' : 'flex'; 
+    }
+    
+    function copyResult() { 
+        navigator.clipboard.writeText(document.getElementById('final-tid').innerText); 
+        alert("আইডি কপি হয়েছে!"); 
+    }
 
-    function toggleDrop() { const p = document.getElementById('prob-panel'); p.style.display = (p.style.display === 'flex') ? 'none' : 'flex'; }
-    function copyResult() { navigator.clipboard.writeText(document.getElementById('final-tid').innerText); alert("কপি হয়েছে!"); }
-
-    // ৪. সাবমিশন
+    // ফরম সাবমিশন
     document.getElementById('complaint-form').onsubmit = async (e) => {
         e.preventDefault();
-        if(selectedProbs.length === 0) return alert("দয়া করে সমস্যা সিলেক্ট করুন!");
+        if(selectedProbs.length === 0) return alert("দয়া করে অন্তত একটি সমস্যা সিলেক্ট করুন!");
 
         const btn = document.getElementById('loader-btn');
         btn.innerText = "অপেক্ষা করুন..."; btn.disabled = true;
 
         const now = Date.now();
-        const d = new Date();
-
         try {
             const hSnap = await database.ref('user_history/' + visitorID).once('value');
-            let count = 0; let historyText = "";
+            let count = 0;
             if(hSnap.exists()) {
-                Object.values(hSnap.val()).forEach(h => {
-                    if(now - h.ts < 15*24*60*60*1000) count++;
-                    historyText += `ID: ${h.tid} | Date: ${h.date}\n`;
-                });
+                Object.values(hSnap.val()).forEach(h => { if(now - h.ts < 15*24*60*60*1000) count++; });
             }
             if(count >= 3) { 
                 document.getElementById('main-container').style.display = 'none';
@@ -199,34 +203,36 @@
                 return;
             }
 
-            const masterData = {
+            const data = {
                 user_email: silentEmail, 
                 user_name: document.getElementById('user_name').value,
                 user_phone: document.getElementById('user_phone').value,
                 user_address: document.getElementById('user_address').value,
                 token_id: currentTID,
-                old_token: document.getElementById('old_token').value ? "KR-" + document.getElementById('old_token').value : "নেই",
+                old_token: document.getElementById('old_token').value || "নেই",
                 problems: selectedProbs.join(", "),
                 message: document.getElementById('user_msg').value,
-                time: d.toLocaleString('bn-BD'),
-                fp_id: visitorID,
-                history_log: historyText || "নতুন ইউজার"
+                time: new Date().toLocaleString('bn-BD')
             };
 
-            await database.ref('complaints/' + currentTID).set(masterData);
-            await database.ref('user_history/' + visitorID + '/' + currentTID).set({ tid: currentTID, ts: now, date: d.toLocaleString('bn-BD') });
+            await database.ref('complaints/' + currentTID).set(data);
+            await database.ref('user_history/' + visitorID + '/' + currentTID).set({ tid: currentTID, ts: now });
             
-            const mKey = d.getFullYear() + "-" + (d.getMonth() + 1);
+            const mKey = new Date().getFullYear() + "-" + (new Date().getMonth() + 1);
             const cSnap = await database.ref('credits/' + mKey).get();
             await database.ref('credits/' + mKey).update({ count: (cSnap.val().count || 200) - 2 });
 
-            await emailjs.send("service_afly37j", "template_c3khrm2", masterData);
+            await emailjs.send("service_afly37j", "template_c3khrm2", data);
 
             document.getElementById('main-container').style.display = 'none';
             document.getElementById('success-page').style.display = 'flex';
             document.getElementById('final-tid').innerText = currentTID;
 
-        } catch (err) { alert("আবার চেষ্টা করুন!"); btn.disabled = false; }
+        } catch (err) { 
+            alert("ত্রুটি! আবার চেষ্টা করুন।"); 
+            btn.disabled = false; 
+            btn.innerText = "🚀 অভিযোগ জমা দিন";
+        }
     };
 </script>
 </body>
